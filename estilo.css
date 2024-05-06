@@ -5,3 +5,7 @@ body{
 #board {
     background-color: black;
 }
+
+.puntuacionesItem{
+    list-style: none;
+}
