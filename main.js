@@ -27,6 +27,8 @@ let nave = {
     height : naveHeight
 }
 
+
+
 // INVADERS
 let aliens = [];
 let alienWidth = tamañoJuego*2;
@@ -41,7 +43,12 @@ let aliensContador = 0;
 let alienVelocidad = 1 
 
 
-
+let naveAlien = {
+  x : aliensX,
+  y : aliensY,
+  width: alienWidth,
+  height : alienHeight
+}
 //CARGAR PAGINA 
 
 // const jugar = document.querySelector("#jugar");
@@ -63,14 +70,15 @@ let alienVelocidad = 1
     crearAliens();
 
     requestAnimationFrame(recarga);
-    document.addEventListener("keydown", movimientosNave)
-    document.addEventListener("keyup", disparar)
+    document.addEventListener("keydown", movimientosNave);
+    document.addEventListener("keyup", disparar);
 }
 
 //BALAS
 let balas= [];
 let balasVelocidad= -10;
-
+let balasAlien = [];
+let balasAlienVelocidad = +15
 let puntos = 0
 let finDelJuego = false;
 
@@ -97,8 +105,14 @@ function recarga () {
                 alienVelocidad *= -1
             }
             context.drawImage(alienImg, alien.x, alien.y, alien.width , alien.height)
+
+            if(balasAlien.y >= nave.y) {
+              finDelJuego = true;
+            }
         }
     }
+
+    /// BALAS NAVE
     for ( let i = 0; i < balas.length; i++) {
       let bala = balas[i];
       bala.y += balasVelocidad;
@@ -121,6 +135,26 @@ function recarga () {
     }
 
 
+    // BALAS ALIEN
+    for (let i = 0; i < balasAlien.length; i++) {
+      let balaAlien = balasAlien[i];
+      balaAlien.y += balasAlienVelocidad;
+      context.fillStyle = "red";
+      context.fillRect(balaAlien.x, balaAlien.y, balaAlien.width, balaAlien.height);
+  
+      // Verificar colisión con la nave
+      if (colisionNave(balaAlien, nave)) {
+          finDelJuego = true;
+          break; // Detener el bucle
+      }
+  }
+  
+
+  
+    while (balas.length > 0 && (balas[0].usada || balas[0].y <0)) {
+      balas.shift();
+    }
+
     // PASAR DE NIVEL
   if (aliensContador == 0) {
   aliensColums = Math.min (aliensColums + 1, columns/2 -2);
@@ -135,9 +169,12 @@ function recarga () {
   crearAliens();
 }
 
+disparoAlien()
+
 context.fillStyle = "white";
 context.font = "16px courier";
 context.fillText(puntos, 5, 20);
+
 
 }
 
@@ -197,9 +234,86 @@ function disparar (e) {
 }
 
 
+// function disparoAlien () {
+//   if (finDelJuego){
+//     return;
+//   }
+//    if (Math.random() < 0.005) { // Probabilidad de disparo de cada alien, puedes ajustar este valor
+//     // Seleccionar un alien aleatorio que esté vivo
+//     let alienDisparador = aliens[Math.floor(Math.random() * aliens.length)];
+
+//     let balaAlien = {
+//         x: alienDisparador.x + alienDisparador.width * 15 / 32,
+//         y: alienDisparador.y + alienDisparador.height,
+//         width: tamañoJuego / 8,
+//         height: tamañoJuego / 2,
+//         usada: false
+//     };
+//     balasAlien.push(balaAlien);
+// }
+
+// }
+
+let disparoEnProceso = false;
+
+function disparoAlien() {
+    if (finDelJuego) {
+        return;
+    }
+
+    // Verifica si ya hay un disparo en proceso
+    if (!disparoEnProceso) {
+        // Selecciona un alien aleatorio que esté vivo
+        let alienDisparador = aliens.filter(alien => alien.alive)[Math.floor(Math.random() * aliens.length)];
+
+        // Verifica si hay un alien vivo para disparar
+        if (alienDisparador) {
+            // Crea la bala del alien con las coordenadas de este alien
+            let balaAlien = {
+                x: alienDisparador.x + alienDisparador.width * 15 / 32,
+                y: alienDisparador.y + alienDisparador.height,
+                width: tamañoJuego / 8,
+                height: tamañoJuego / 2,
+                usada: false
+            };
+
+            // Agrega la bala del alien a la lista de balas alien
+            balasAlien.push(balaAlien);
+
+            // Establece la bandera de disparo en true
+            disparoEnProceso = true;
+
+            // Restablece la bandera después de un tiempo aleatorio entre 1 y 3 segundos
+            setTimeout(function() {
+                disparoEnProceso = false;
+            }, Math.random() * (2000 - 1000) + 1000);
+        }
+    }
+}
+
+
+
 function colision (a, b) {
   return a.x < b.x +b.width && a.x + a.width > b.x && a.y < b.y +b.height && a.y + a.height > b.y;
 }
+
+function colisionNave(a, b) {
+  return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -243,7 +357,8 @@ function actualizarLocalStorage(puntuaciones) {
   puntuacionesGuardadas = puntuaciones;
 
   // Guardar las puntuaciones actualizadas en el localStorage
-  localStorage.setItem('puntuaciones', JSON.stringify(puntuacionesGuardadas));
+  localStorage.setItem('puntuaciones', JSON.stringify(puntuacionesGuardadas,));
+  localStorage.setItem('puntajeplayer', JSON.stringify(puntos,));
 }
 
 // Llamada a esta función cuando el usuario marque una nueva marca
