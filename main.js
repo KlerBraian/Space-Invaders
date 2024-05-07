@@ -1,3 +1,7 @@
+//VARIABLES
+// TABLERO 
+
+
 let tamañoJuego = 38;
 let rows = 19;
 let columns = 19;
@@ -8,6 +12,7 @@ let boardHeight = tamañoJuego * rows;
 let context;
 let naveImg;
 
+//NAVE PLAYER 
 
 let naveWidht = tamañoJuego*2;
 let naveHeight = tamañoJuego;
@@ -22,7 +27,7 @@ let nave = {
     height : naveHeight
 }
 
-
+// INVADERS
 let aliens = [];
 let alienWidth = tamañoJuego*2;
 let alienHeight= tamañoJuego;
@@ -36,6 +41,8 @@ let aliensContador = 0;
 let alienVelocidad = 1 
 
 
+
+//CARGAR PAGINA 
 
 // const jugar = document.querySelector("#jugar");
 // jugar.addEventListener("click" ,  () => {
@@ -57,10 +64,26 @@ let alienVelocidad = 1
 
     requestAnimationFrame(recarga);
     document.addEventListener("keydown", movimientosNave)
+    document.addEventListener("keyup", disparar)
 }
+
+//BALAS
+let balas= [];
+let balasVelocidad= -10;
+
+let puntos = 0
+let finDelJuego = false;
+
+
+//RENDERIZAR JUEGO
 
 function recarga () {
     requestAnimationFrame(recarga);
+
+    if (finDelJuego) {
+      return;
+    }
+
     context.clearRect (0,0, board.width, board.height)
 
     context.drawImage (naveImg, nave.x, nave.y, nave.width, nave.height)
@@ -76,9 +99,54 @@ function recarga () {
             context.drawImage(alienImg, alien.x, alien.y, alien.width , alien.height)
         }
     }
+    for ( let i = 0; i < balas.length; i++) {
+      let bala = balas[i];
+      bala.y += balasVelocidad;
+      context.fillStyle = "white";
+      context.fillRect (bala.x,bala.y, bala.width,bala.height)
+      for (let i = 0; i < aliens.length; i++) {
+        let alien = aliens[i];
+        if (!bala.usada && alien.alive && colision (bala,alien)) {
+          bala.usada = true;
+          alien.alive = false;
+          aliensContador --;
+          puntos +=100
+        }
+      }
+    }
+
+  
+    while (balas.length > 0 && (balas[0].usada || balas[0].y <0)) {
+      balas.shift();
+    }
+
+
+    // PASAR DE NIVEL
+  if (aliensContador == 0) {
+  aliensColums = Math.min (aliensColums + 1, columns/2 -2);
+  if (aliensRows < 6) { // Verifica si aún no tienes 9 filas de aliens
+    aliensRows = Math.min(aliensRows + 1, rows - 4);
+  } else { // Si ya alcanzaste el nivel máximo, reinicia las filas de aliens a 9
+    aliensRows = 6;
+  }
+  alienVelocidad += 0.2;
+  aliens = [];
+  balas = [];
+  crearAliens();
 }
 
+context.fillStyle = "white";
+context.font = "16px courier";
+context.fillText(puntos, 5, 20);
+
+}
+
+// MOVIMIENTO NAVE
+
 function movimientosNave (e) {
+    if(finDelJuego) {
+      return;
+    }
     if (e.code == "ArrowLeft" && nave.x - naveVelocidad >=0) {
         nave.x -= naveVelocidad;
     }
@@ -87,6 +155,9 @@ function movimientosNave (e) {
     }
  
 }
+
+
+// CREAR ALIENS
 
 
 function crearAliens () {
@@ -107,10 +178,28 @@ function crearAliens () {
 }
 
 
+//DISPARAR
+
+function disparar (e) {
+  if (finDelJuego){
+    return;
+  }
+    if (e.code =="Space") {
+        let bala = {
+            x: nave.x + naveWidht*15/32,
+            y : nave.y,
+            width : tamañoJuego/8,
+            height: tamañoJuego/2,
+            usada: false 
+        }
+        balas.push (bala)
+    }
+}
 
 
-
-
+function colision (a, b) {
+  return a.x < b.x +b.width && a.x + a.width > b.x && a.y < b.y +b.height && a.y + a.height > b.y;
+}
 
 
 
