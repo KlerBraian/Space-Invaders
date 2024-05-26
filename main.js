@@ -49,11 +49,91 @@ let naveAlien = {
   width: alienWidth,
   height : alienHeight
 }
+//BALAS
+let balas= [];
+let balasVelocidad= -10;
+console.log(balasVelocidad)
+let balasAlien = [];
+let balasAlienVelocidad = +15
+console.log(balasAlienVelocidad)
+let puntos = 0
+let finDelJuego = false;
+
+let nombreJugador = '';
+
+window.onload = function() {
+  fetch('./main.json')
+      .then(response => response.json())
+      .then(data => {
+          // Mostrar las puntuaciones iniciales desde el JSON
+          mostrarPuntuaciones(data);
+
+          // Guardar las puntuaciones del JSON en el localStorage si no están ya presentes
+          if (!localStorage.getItem('puntuaciones')) {
+              localStorage.setItem('puntuaciones', JSON.stringify(data));
+          }
+      })
+      .catch(error => {
+          console.error('Se produjo un error al obtener las puntuaciones:', error);
+      });
+    
+
+document.querySelector("#iniciar-juego").addEventListener("click", function() {
+  nombreJugador = document.querySelector("#nombre-jugador").value;
+  if (nombreJugador) {
+      // Restablecer variables del juego
+      finDelJuego = false;
+      puntos = 0;
+      nave = {
+          x : naveEjeX,
+          y : naveEjeY,
+          width: naveWidht,
+          height : naveHeight
+      };
+      aliens = [];
+      balas = [];
+      balasAlien = [];
+      balasVelocidad= -10;
+      balasAlienVelocidad = 15;
+ 
+      
+      // Mostrar el contenedor de nombre si es necesario
+      document.querySelector("#nombre-jugador-container").style.display = 'none';
+      
+      // Eliminar listeners de eventos de teclado previos
+      document.removeEventListener("keydown", movimientosNave);
+      document.removeEventListener("keyup", disparar);
+
+      // Iniciar el juego
+      iniciarJuego();
+
+      // Agregar listeners de eventos de teclado nuevamente
+      document.addEventListener("keydown", movimientosNave);
+      document.addEventListener("keyup", disparar);
+  } else {
+      alert("Por favor ingresa tu nombre");
+  }
+});
+}
 //CARGAR PAGINA 
 
 // const jugar = document.querySelector("#jugar");
 // jugar.addEventListener("click" ,  () => {
-    window.onload = function () {
+   function iniciarJuego() {
+    finDelJuego = false;
+    puntos = 0;
+    nave = {
+        x : naveEjeX,
+        y : naveEjeY,
+        width: naveWidht,
+        height : naveHeight
+    };
+    aliens = [];
+    balas = [];
+    balasAlien = [];
+    balasVelocidad= -10;
+    balasAlienVelocidad = 15;
+
     board = document.querySelector("#board");
     board.width = boardWidth;
     board.height = boardHeight;
@@ -74,13 +154,7 @@ let naveAlien = {
     document.addEventListener("keyup", disparar);
 }
 
-//BALAS
-let balas= [];
-let balasVelocidad= -10;
-let balasAlien = [];
-let balasAlienVelocidad = +15
-let puntos = 0
-let finDelJuego = false;
+
 
 
 //RENDERIZAR JUEGO
@@ -89,6 +163,8 @@ function recarga () {
     requestAnimationFrame(recarga);
 
     if (finDelJuego) {
+      marcarNuevaPuntuacion();
+      document.querySelector("#nombre-jugador-container").style.display = 'block';
       return;
     }
 
@@ -108,6 +184,8 @@ function recarga () {
 
             if(balasAlien.y >= nave.y) {
               finDelJuego = true;
+              marcarNuevaPuntuacion();
+              return;
             }
         }
     }
@@ -234,26 +312,6 @@ function disparar (e) {
 }
 
 
-// function disparoAlien () {
-//   if (finDelJuego){
-//     return;
-//   }
-//    if (Math.random() < 0.005) { // Probabilidad de disparo de cada alien, puedes ajustar este valor
-//     // Seleccionar un alien aleatorio que esté vivo
-//     let alienDisparador = aliens[Math.floor(Math.random() * aliens.length)];
-
-//     let balaAlien = {
-//         x: alienDisparador.x + alienDisparador.width * 15 / 32,
-//         y: alienDisparador.y + alienDisparador.height,
-//         width: tamañoJuego / 8,
-//         height: tamañoJuego / 2,
-//         usada: false
-//     };
-//     balasAlien.push(balaAlien);
-// }
-
-// }
-
 let disparoEnProceso = false;
 
 function disparoAlien() {
@@ -261,14 +319,10 @@ function disparoAlien() {
         return;
     }
 
-    // Verifica si ya hay un disparo en proceso
     if (!disparoEnProceso) {
-        // Selecciona un alien aleatorio que esté vivo
         let alienDisparador = aliens.filter(alien => alien.alive)[Math.floor(Math.random() * aliens.length)];
 
-        // Verifica si hay un alien vivo para disparar
         if (alienDisparador) {
-            // Crea la bala del alien con las coordenadas de este alien
             let balaAlien = {
                 x: alienDisparador.x + alienDisparador.width * 15 / 32,
                 y: alienDisparador.y + alienDisparador.height,
@@ -277,16 +331,13 @@ function disparoAlien() {
                 usada: false
             };
 
-            // Agrega la bala del alien a la lista de balas alien
             balasAlien.push(balaAlien);
 
-            // Establece la bandera de disparo en true
             disparoEnProceso = true;
 
-            // Restablece la bandera después de un tiempo aleatorio entre 1 y 3 segundos
             setTimeout(function() {
                 disparoEnProceso = false;
-            }, Math.random() * (2000 - 1000) + 1000);
+            }, Math.random() * (1500 - 1000) + 1000);
         }
     }
 }
@@ -310,69 +361,74 @@ function colisionNave(a, b) {
 
 
 
-
-
-
-
-
-
-
-// Obtener las puntuaciones de los jugadores utilizando fetch
 fetch('./main.json')
   .then(response => response.json())
   .then(data => {
-    // Manipular los datos obtenidos
     mostrarPuntuaciones(data);
-
-    // Actualizar las puntuaciones en el localStorage
     actualizarLocalStorage(data);
   })
   .catch(error => {
     console.error('Se produjo un error al obtener las puntuaciones:', error);
   });
 
-// Función para mostrar las puntuaciones en el juego
-function mostrarPuntuaciones(puntuaciones) {
-  // Supongamos que tienes un elemento HTML con el id "puntuaciones"
-  const puntuacionesElemento = document.querySelector('.puntuaciones');
 
-  // Limpiar el contenido anterior
+function marcarNuevaPuntuacion() {
+  if (puntos > 0 && nombreJugador) {
+      actualizarLocalStorage();
+      mostrarPuntuaciones(JSON.parse(localStorage.getItem('puntuaciones')));
+  }
+}
+
+document.querySelector("#reset-puntos").addEventListener("click", resetPuntuaciones);
+
+function resetPuntuaciones() {
+    localStorage.removeItem('puntuaciones');
+    fetch('./main.json')
+      .then(response => response.json())
+      .then(data => {
+
+        mostrarPuntuaciones(data);
+
+        localStorage.setItem('puntuaciones', JSON.stringify(data));
+
+        puntos = 0;
+        nombreJugador = "";
+      })
+      .catch(error => {
+        console.error('Se produjo un error al obtener las puntuaciones:', error);
+      });
+}
+
+function actualizarLocalStorage() {
+  let puntuacionesGuardadas = JSON.parse(localStorage.getItem('puntuaciones')) || [];
+  let jugadorExistente = puntuacionesGuardadas.find(puntuacion => puntuacion.nombre === nombreJugador);
+  if (jugadorExistente) {
+      if (puntos > jugadorExistente.puntuacion) {
+          jugadorExistente.puntuacion = puntos;
+      }
+  } else {
+      if (nombreJugador) { 
+          puntuacionesGuardadas.push({ nombre: nombreJugador, puntuacion: puntos });
+      }
+  }
+
+
+  localStorage.setItem('puntuaciones', JSON.stringify(puntuacionesGuardadas));
+
+  mostrarPuntuaciones(puntuacionesGuardadas);
+}
+
+function mostrarPuntuaciones(puntuaciones) {
+  const puntuacionesElemento = document.querySelector('.puntuaciones');
   puntuacionesElemento.innerHTML = '';
 
-  // Crear elementos de lista para cada puntuación y agregarlos al elemento HTML
-  puntuaciones.forEach(puntuacion => {
-    const listItem = document.createElement('li');
-    listItem.classList.add ("puntuacionesItem")
-    listItem.textContent = `${puntuacion.nombre}: ${puntuacion.puntuacion}`;
-    puntuacionesElemento.appendChild(listItem);
-  });
-}
-
-// Función para actualizar las puntuaciones en el localStorage
-function actualizarLocalStorage(puntuaciones) {
-  // Obtener las puntuaciones almacenadas en el localStorage
-  let puntuacionesGuardadas = JSON.parse(localStorage.getItem('puntuaciones')) || [];
-
-  // Actualizar las puntuaciones almacenadas con las nuevas puntuaciones obtenidas
-  puntuacionesGuardadas = puntuaciones;
-
-  // Guardar las puntuaciones actualizadas en el localStorage
-  localStorage.setItem('puntuaciones', JSON.stringify(puntuacionesGuardadas,));
-  localStorage.setItem('puntajeplayer', JSON.stringify(puntos,));
-}
-
-// Llamada a esta función cuando el usuario marque una nueva marca
-function marcarNuevaPuntuacion() {
-  // Lógica para marcar una nueva puntuación...
-
-  // Una vez que se ha marcado la nueva puntuación, volver a cargar las puntuaciones
-  fetch('./main.json')
-    .then(response => response.json())
-    .then(data => {
-      // Actualizar las puntuaciones en el localStorage
-      actualizarLocalStorage(data);
-    })
-    .catch(error => {
-      console.error('Se produjo un error al obtener las puntuaciones:', error);
+  puntuaciones
+    .filter(puntuacion => puntuacion.nombre && puntuacion.puntuacion > 0) // Filtrar jugadores con nombre y puntuación válida
+    .sort((a, b) => b.puntuacion - a.puntuacion)
+    .forEach(puntuacion => {
+      const listItem = document.createElement('li');
+      listItem.classList.add("puntuacionesItem");
+      listItem.textContent = `${puntuacion.nombre}: ${puntuacion.puntuacion}`;
+      puntuacionesElemento.appendChild(listItem);
     });
 }

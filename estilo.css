@@ -1,5 +1,6 @@
 body{
     text-align: center;
+    background-image: url(https://t4.ftcdn.net/jpg/03/90/22/93/360_F_390229338_frGUxS6LBVQjxGJD7FYaSlsnfqGQgnyB.jpg);
 }
 
 #board {
@@ -8,4 +9,41 @@ body{
 
 .puntuacionesItem{
     list-style: none;
+}
+
+ul {
+    padding: 0;
+}
+
+.container-datos {
+    display: flex;
+    color: #fff;
+    gap: 1rem ;
+    justify-content: center;
+    align-items: center;
+    text-shadow:  0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red,0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red;
+}
+
+button {
+    border-radius: 0.3rem;
+    padding: 0.3rem;
+}
+
+input {
+    border-radius: 0.3rem;
+    padding: 0.3rem;
+}
+
+.titulo {
+    color: #fff;
+    text-shadow:  0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red,0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red;
+}
+
+.tabla-puntajes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+    text-shadow:  0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red,0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red;
 }

@@ -6,17 +6,27 @@
     <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
-
-
     <h1 class="titulo">Space Invaders</h1>
+    <div class="container-datos" id="nombre-jugador-container">
+        <label for="nombre-jugador">Ingresa tu nombre</label>
+        <input type="text" id="nombre-jugador" />
+        <button id="iniciar-juego">Comenzar a Jugar</button>
+        <button id="reset-puntos">Resetear puntuaciones</button>
+    </div>
+    <div class="tabla-puntajes" id="tabla-puntajes">
+        <h2>High Scores</h2>
+        <ul class="puntuaciones"></ul>
+    </div>
+    <div id="juego-container">
+        <canvas id="board"></canvas>
+    </div>
+   
     <!-- <div>
     <button id="jugar">Jugar</button>
     </div> -->
-    <p class="contador">0</p>
-    <ul class ="puntuaciones">
 
-    </ul>
-    <canvas id="board"></canvas>
+
+
 
     <script src="./main.js"></script>
 </body>
