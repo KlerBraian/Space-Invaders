@@ -52,23 +52,16 @@ let naveAlien = {
 //BALAS
 let balas= [];
 let balasVelocidad= -10;
-console.log(balasVelocidad)
 let balasAlien = [];
 let balasAlienVelocidad = +15
-console.log(balasAlienVelocidad)
-let puntos = 0
 let finDelJuego = false;
 
-let nombreJugador = '';
 
 window.onload = function() {
   fetch('./main.json')
       .then(response => response.json())
       .then(data => {
-          // Mostrar las puntuaciones iniciales desde el JSON
           mostrarPuntuaciones(data);
-
-          // Guardar las puntuaciones del JSON en el localStorage si no están ya presentes
           if (!localStorage.getItem('puntuaciones')) {
               localStorage.setItem('puntuaciones', JSON.stringify(data));
           }
@@ -78,62 +71,39 @@ window.onload = function() {
       });
     
 
-document.querySelector("#iniciar-juego").addEventListener("click", function() {
-  nombreJugador = document.querySelector("#nombre-jugador").value;
-  if (nombreJugador) {
-      // Restablecer variables del juego
-      finDelJuego = false;
-      puntos = 0;
-      nave = {
-          x : naveEjeX,
-          y : naveEjeY,
-          width: naveWidht,
-          height : naveHeight
-      };
-      aliens = [];
-      balas = [];
-      balasAlien = [];
-      balasVelocidad= -10;
-      balasAlienVelocidad = 15;
- 
+      document.querySelector("#iniciar-juego").addEventListener("click", function() {
+        nombreJugador = document.querySelector("#nombre-jugador").value;
+        if (nombreJugador) {
+          Toastify({
+            text: "Buena suerte " + nombreJugador,
+            duration: 1500,
+            style: { 
+              padding: "0.5rem",
+              backgroundColor: "#fff",
+              borderRadius: "0.5rem",
+              fontSize: "1.2rem",
+              position: "absolute"
+            },
+          }).showToast();
       
-      // Mostrar el contenedor de nombre si es necesario
-      document.querySelector("#nombre-jugador-container").style.display = 'none';
-      
-      // Eliminar listeners de eventos de teclado previos
-      document.removeEventListener("keydown", movimientosNave);
-      document.removeEventListener("keyup", disparar);
-
-      // Iniciar el juego
-      iniciarJuego();
-
-      // Agregar listeners de eventos de teclado nuevamente
-      document.addEventListener("keydown", movimientosNave);
-      document.addEventListener("keyup", disparar);
-  } else {
-      alert("Por favor ingresa tu nombre");
-  }
-});
-}
+          document.querySelector("#nombre-jugador-container").style.display = 'none';
+        
+          iniciarJuego();
+          document.addEventListener("keydown", movimientosNave);
+          document.addEventListener("keyup", disparar);
+        } else {
+          Swal.fire({
+            icon: "error",
+            imageUrl: "https://i.ytimg.com/vi/FwrB8sMiZCY/oar2.jpg?sqp=-oaymwEYCJgDENAFSFqQAgHyq4qpAwcIARUAAIhC&rs=AOn4CLArfaEnOqZA7L6PBm1LNfC5tSryHw",
+            imageHeight: 200,
+            text: "Lo sentimos, debes ingresar un nombre para jugar",
+          });
+        }
+      });
+    }
 //CARGAR PAGINA 
 
-// const jugar = document.querySelector("#jugar");
-// jugar.addEventListener("click" ,  () => {
    function iniciarJuego() {
-    finDelJuego = false;
-    puntos = 0;
-    nave = {
-        x : naveEjeX,
-        y : naveEjeY,
-        width: naveWidht,
-        height : naveHeight
-    };
-    aliens = [];
-    balas = [];
-    balasAlien = [];
-    balasVelocidad= -10;
-    balasAlienVelocidad = 15;
-
     board = document.querySelector("#board");
     board.width = boardWidth;
     board.height = boardHeight;
@@ -144,8 +114,8 @@ document.querySelector("#iniciar-juego").addEventListener("click", function() {
     naveImg.src = "./img/nave.png";
     naveImg.onload = function() { context.drawImage (naveImg, nave.x, nave.y, nave.width, nave.height)}
    
-    alienImg = new Image();
-    alienImg.src = "./img/alien.png"
+    aliensImg = new Image();
+    aliensImg.src = "./img/alien.png"
 
     crearAliens();
 
@@ -163,7 +133,25 @@ function recarga () {
     requestAnimationFrame(recarga);
 
     if (finDelJuego) {
-      marcarNuevaPuntuacion();
+      Swal.fire({
+        icon: "success",
+        text: "Buen intento " + nombreJugador + "!",
+    });
+    actualizarPuntuacion(nombreJugador, puntos);
+      puntos = 0;
+      nave = {
+          x : naveEjeX,
+          y : naveEjeY,
+          width: naveWidht,
+          height : naveHeight
+      };
+      aliens = [];
+      balas = [];
+      balasAlien = [];
+      balasVelocidad= -10;
+      balasAlienVelocidad = 15;
+      finDelJuego = false;
+
       document.querySelector("#nombre-jugador-container").style.display = 'block';
       return;
     }
@@ -180,7 +168,7 @@ function recarga () {
             if(alien.x + alien.width >= board.width || alien.x <=0) {
                 alienVelocidad *= -1
             }
-            context.drawImage(alienImg, alien.x, alien.y, alien.width , alien.height)
+            context.drawImage(aliensImg, alien.x, alien.y, alien.width , alien.height)
 
             if(balasAlien.y >= nave.y) {
               finDelJuego = true;
@@ -220,10 +208,9 @@ function recarga () {
       context.fillStyle = "red";
       context.fillRect(balaAlien.x, balaAlien.y, balaAlien.width, balaAlien.height);
   
-      // Verificar colisión con la nave
       if (colisionNave(balaAlien, nave)) {
           finDelJuego = true;
-          break; // Detener el bucle
+          break; 
       }
   }
   
@@ -236,9 +223,9 @@ function recarga () {
     // PASAR DE NIVEL
   if (aliensContador == 0) {
   aliensColums = Math.min (aliensColums + 1, columns/2 -2);
-  if (aliensRows < 6) { // Verifica si aún no tienes 9 filas de aliens
+  if (aliensRows < 6) { 
     aliensRows = Math.min(aliensRows + 1, rows - 4);
-  } else { // Si ya alcanzaste el nivel máximo, reinicia las filas de aliens a 9
+  } else { 
     aliensRows = 6;
   }
   alienVelocidad += 0.2;
@@ -253,6 +240,9 @@ context.fillStyle = "white";
 context.font = "16px courier";
 context.fillText(puntos, 5, 20);
 
+context.fillStyle = "white";
+context.font = "16px courier";
+context.fillText(nombreJugador, 600, 20);
 
 }
 
@@ -358,72 +348,45 @@ function colisionNave(a, b) {
 
 
 
-
+let puntos = 0
+let nombreJugador = '';
 
 
 fetch('./main.json')
   .then(response => response.json())
   .then(data => {
     mostrarPuntuaciones(data);
-    actualizarLocalStorage(data);
+    localStorage.setItem('puntuaciones', JSON.stringify(data)); 
   })
   .catch(error => {
     console.error('Se produjo un error al obtener las puntuaciones:', error);
   });
 
 
-function marcarNuevaPuntuacion() {
-  if (puntos > 0 && nombreJugador) {
-      actualizarLocalStorage();
-      mostrarPuntuaciones(JSON.parse(localStorage.getItem('puntuaciones')));
-  }
-}
-
 document.querySelector("#reset-puntos").addEventListener("click", resetPuntuaciones);
 
 function resetPuntuaciones() {
-    localStorage.removeItem('puntuaciones');
-    fetch('./main.json')
-      .then(response => response.json())
-      .then(data => {
-
-        mostrarPuntuaciones(data);
-
-        localStorage.setItem('puntuaciones', JSON.stringify(data));
-
-        puntos = 0;
-        nombreJugador = "";
-      })
-      .catch(error => {
-        console.error('Se produjo un error al obtener las puntuaciones:', error);
-      });
+  localStorage.removeItem('puntuaciones');
+  fetch('./main.json')
+    .then(response => response.json())
+    .then(data => {
+      mostrarPuntuaciones(data);
+      localStorage.setItem('puntuaciones', JSON.stringify(data));
+      puntos = 0;
+      nombreJugador = "";
+    })
+    .catch(error => {
+      console.error('Se produjo un error al obtener las puntuaciones:', error);
+    });
 }
 
-function actualizarLocalStorage() {
-  let puntuacionesGuardadas = JSON.parse(localStorage.getItem('puntuaciones')) || [];
-  let jugadorExistente = puntuacionesGuardadas.find(puntuacion => puntuacion.nombre === nombreJugador);
-  if (jugadorExistente) {
-      if (puntos > jugadorExistente.puntuacion) {
-          jugadorExistente.puntuacion = puntos;
-      }
-  } else {
-      if (nombreJugador) { 
-          puntuacionesGuardadas.push({ nombre: nombreJugador, puntuacion: puntos });
-      }
-  }
-
-
-  localStorage.setItem('puntuaciones', JSON.stringify(puntuacionesGuardadas));
-
-  mostrarPuntuaciones(puntuacionesGuardadas);
-}
 
 function mostrarPuntuaciones(puntuaciones) {
   const puntuacionesElemento = document.querySelector('.puntuaciones');
   puntuacionesElemento.innerHTML = '';
 
   puntuaciones
-    .filter(puntuacion => puntuacion.nombre && puntuacion.puntuacion > 0) // Filtrar jugadores con nombre y puntuación válida
+    .filter(puntuacion => puntuacion.nombre && puntuacion.puntuacion > 0) 
     .sort((a, b) => b.puntuacion - a.puntuacion)
     .forEach(puntuacion => {
       const listItem = document.createElement('li');
@@ -432,3 +395,17 @@ function mostrarPuntuaciones(puntuaciones) {
       puntuacionesElemento.appendChild(listItem);
     });
 }
+
+function actualizarPuntuacion(nombre, nuevaPuntuacion) {
+  const puntuaciones = JSON.parse(localStorage.getItem('puntuaciones')) || [];
+  const jugadorExistente = puntuaciones.find(p => p.nombre === nombre);
+  if (jugadorExistente) {
+    jugadorExistente.puntuacion = nuevaPuntuacion; 
+  } else {
+    puntuaciones.push({ nombre: nombre, puntuacion: nuevaPuntuacion });
+  }
+
+  localStorage.setItem('puntuaciones', JSON.stringify(puntuaciones));
+  mostrarPuntuaciones(puntuaciones);
+}
+

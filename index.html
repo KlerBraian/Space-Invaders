@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Space Invaders</title>
     <link rel="stylesheet" href="estilo.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <h1 class="titulo">Space Invaders</h1>
@@ -14,20 +15,14 @@
         <button id="reset-puntos">Resetear puntuaciones</button>
     </div>
     <div class="tabla-puntajes" id="tabla-puntajes">
-        <h2>High Scores</h2>
+        <h2 class="puntajes-h2">High Scores</h2>
         <ul class="puntuaciones"></ul>
     </div>
     <div id="juego-container">
         <canvas id="board"></canvas>
     </div>
-   
-    <!-- <div>
-    <button id="jugar">Jugar</button>
-    </div> -->
-
-
-
-
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./main.js"></script>
 </body>
 </html>

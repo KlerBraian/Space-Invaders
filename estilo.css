@@ -1,6 +1,9 @@
 body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     text-align: center;
-    background-image: url(https://t4.ftcdn.net/jpg/03/90/22/93/360_F_390229338_frGUxS6LBVQjxGJD7FYaSlsnfqGQgnyB.jpg);
+    background-image: url(https://static.vecteezy.com/system/resources/previews/011/762/571/original/arcade-shooter-8-bit-pixel-art-game-space-invaders-vector.jpg);
 }
 
 #board {
@@ -12,38 +15,72 @@ body{
 }
 
 ul {
+    background-color: #000d2f;
     padding: 0;
+    list-style: none;
+    margin-top: 0;
+   
 }
 
 .container-datos {
+    
     display: flex;
     color: #fff;
     gap: 1rem ;
     justify-content: center;
     align-items: center;
-    text-shadow:  0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red,0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red;
+    text-shadow:  0 0 5px rgb(255, 255, 255), 0 0 5px rgb(250, 245, 245);
 }
 
 button {
+    background-color: #000d2f;
+    cursor: pointer;
+    margin: 1rem;
     border-radius: 0.3rem;
-    padding: 0.3rem;
+    padding: 0.4rem;
+    border-color:#fff;
+    color: #fff;
+    text-shadow:  0 0 5px rgb(255, 255, 255), 0 0 5px rgb(250, 245, 245), 0 0 5px rgb(253, 249, 249), 0 0 5px rgb(255, 244, 244);
+}
+
+label {
+    background-color: #000d2f;
 }
 
 input {
+    background-color: #000d2f;
+    border-color:#fff;
+    color: #fff;
+    text-shadow:  0 0 5px rgb(255, 255, 255), 0 0 5px rgb(250, 245, 245), 0 0 5px rgb(253, 249, 249), 0 0 5px rgb(255, 244, 244);
     border-radius: 0.3rem;
-    padding: 0.3rem;
+    padding: 0.4rem;
+}
+
+.puntajes-h2 {
+    background-color: #000d2f;
+    margin: 0;
 }
 
 .titulo {
     color: #fff;
-    text-shadow:  0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red,0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red;
+    text-shadow:  0 0 5px rgb(250, 250, 250), 0 0 5px rgb(255, 255, 255);
 }
-
 .tabla-puntajes {
     display: flex;
     flex-direction: column;
     align-items: center;
     color: #fff;
     text-align: center;
-    text-shadow:  0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red,0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red;
+}
+
+.puntuaciones li {
+    margin-block: 1rem;
+}
+
+h2 {
+    text-shadow:  0 0 5px rgb(255, 244, 244);
+}
+
+.main {
+    min-height: 85vh;
 }
