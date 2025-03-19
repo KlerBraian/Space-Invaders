@@ -2,9 +2,12 @@
 // TABLERO 
 
 
-let tamañoJuego = 38;
+// let tamañoJuego = 38;
+
 let rows = 19;
 let columns = 19;
+let tamañoJuego = Math.min(window.innerWidth / columns -2, window.innerHeight / rows -6);
+
 
 let board;
 let boardWidth = tamañoJuego * columns;
@@ -369,8 +372,6 @@ function colision(a, b) {
 function colisionNave(a, b) {
   return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 }
-
-
 
 
 

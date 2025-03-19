@@ -129,3 +129,11 @@ input {
 .ocultarJuego {
     display: none;
 }
+
+
+@media (max-width: 800px) {
+    #board {
+        width: 500px;
+        height: 500px;
+    }
+}
