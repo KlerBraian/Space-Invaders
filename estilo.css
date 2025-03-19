@@ -1,86 +1,131 @@
-body{
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     text-align: center;
+    position: relative;
+    z-index: 0;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-image: url(https://static.vecteezy.com/system/resources/previews/011/762/571/original/arcade-shooter-8-bit-pixel-art-game-space-invaders-vector.jpg);
+    opacity: 0.85;
+    z-index: -1;
+
 }
 
 #board {
     background-color: black;
 }
 
-.puntuacionesItem{
+.puntuacionesItem {
     list-style: none;
 }
 
 ul {
-    background-color: #000d2f;
+
     padding: 0;
     list-style: none;
     margin-top: 0;
-   
+
 }
 
 .container-datos {
-    
     display: flex;
     color: #fff;
-    gap: 1rem ;
+    gap: 1rem;
     justify-content: center;
     align-items: center;
-    text-shadow:  0 0 5px rgb(255, 255, 255), 0 0 5px rgb(250, 245, 245);
+    text-shadow: 0 0 5px rgb(255, 255, 255);
+    font-size: 1.5rem;
 }
 
 button {
-    background-color: #000d2f;
+    background-color: #25304d;
     cursor: pointer;
     margin: 1rem;
     border-radius: 0.3rem;
     padding: 0.4rem;
-    border-color:#fff;
+    border-color: #fff;
     color: #fff;
-    text-shadow:  0 0 5px rgb(255, 255, 255), 0 0 5px rgb(250, 245, 245), 0 0 5px rgb(253, 249, 249), 0 0 5px rgb(255, 244, 244);
+    text-shadow: 0 0 5px rgb(255, 255, 255);
 }
 
 label {
-    background-color: #000d2f;
+    background-color: #25304d;
+    border-radius: 0.3rem;
 }
 
 input {
-    background-color: #000d2f;
-    border-color:#fff;
+    background-color: #25304d;
+    border-color: #fff;
     color: #fff;
-    text-shadow:  0 0 5px rgb(255, 255, 255), 0 0 5px rgb(250, 245, 245), 0 0 5px rgb(253, 249, 249), 0 0 5px rgb(255, 244, 244);
+    text-shadow: 0 0 5px rgb(255, 255, 255);
     border-radius: 0.3rem;
     padding: 0.4rem;
 }
 
-.puntajes-h2 {
-    background-color: #000d2f;
+.puntajes-h3 {
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+    background-color: #25304d;
     margin: 0;
+    text-shadow: 0 0 5px rgb(255, 244, 244);
+    margin-bottom: 3rem;
 }
 
 .titulo {
+    font-size: 2rem;
     color: #fff;
-    text-shadow:  0 0 5px rgb(250, 250, 250), 0 0 5px rgb(255, 255, 255);
+    text-shadow: 0 0 5px rgb(250, 250, 250);
 }
+
 .tabla-puntajes {
+    flex: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     color: #fff;
-    text-align: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    background-color: transparent;
 }
 
 .puntuaciones li {
+    background-color: #25304d;
+    padding: 1rem;
     margin-block: 1rem;
-}
-
-h2 {
-    text-shadow:  0 0 5px rgb(255, 244, 244);
+    border: 2px solid #fff;
+    border-radius: 0.3rem;
+    opacity: 1;
+    font-size: 1.5rem;
 }
 
 .main {
     min-height: 85vh;
+}
+
+.ocultarDatos {
+    position: absolute;
+    display: none;
+    top: -30rem;
+}
+
+.ocultarPuntos {
+    position: absolute;
+    display: none;
+    top: -30rem;
+}
+
+.ocultarJuego {
+    display: none;
 }
