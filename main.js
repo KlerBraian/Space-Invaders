@@ -384,7 +384,6 @@ fetch('./main.json')
   .then(response => response.json())
   .then(data => {
     mostrarPuntuaciones(data);
-    localStorage.setItem('puntuaciones', JSON.stringify(data));
   })
   .catch(error => {
     console.error('Se produjo un error al obtener las puntuaciones:', error);
@@ -398,8 +397,8 @@ function resetPuntuaciones() {
   fetch('./main.json')
     .then(response => response.json())
     .then(data => {
-      mostrarPuntuaciones(data);
       localStorage.setItem('puntuaciones', JSON.stringify(data));
+      mostrarPuntuaciones(data);
       puntos = 0;
       nombreJugador = "";
     })
@@ -412,6 +411,7 @@ function resetPuntuaciones() {
 function mostrarPuntuaciones(puntuaciones) {
   const puntuacionesElemento = document.querySelector('.puntuaciones');
   puntuacionesElemento.innerHTML = '';
+  puntuaciones = JSON.parse(localStorage.getItem('puntuaciones')) || [];
 
   puntuaciones
     .filter(puntuacion => puntuacion.nombre && puntuacion.puntuacion > 0)
