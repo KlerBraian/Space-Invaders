@@ -6,7 +6,7 @@
 
 let rows = 19;
 let columns = 19;
-let tamañoJuego = Math.min(window.innerWidth / columns - 2, window.innerHeight / rows - 6);
+let tamañoJuego = Math.min(window.innerWidth / columns - 2, window.innerHeight / rows - 8);
 let board;
 let boardWidth = tamañoJuego * columns;
 let boardHeight = tamañoJuego * rows;
