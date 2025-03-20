@@ -1,19 +1,18 @@
-//VARIABLES
+                                                                              //VARIABLES
+
+
+
 // TABLERO 
-
-
-// let tamañoJuego = 38;
 
 let rows = 19;
 let columns = 19;
-let tamañoJuego = Math.min(window.innerWidth / columns -2, window.innerHeight / rows -6);
-
-
+let tamañoJuego = Math.min(window.innerWidth / columns - 2, window.innerHeight / rows - 6);
 let board;
 let boardWidth = tamañoJuego * columns;
 let boardHeight = tamañoJuego * rows;
 let context;
 let naveImg;
+
 
 //NAVE PLAYER 
 
@@ -31,8 +30,8 @@ let nave = {
 }
 
 
-
 // INVADERS
+
 let aliens = [];
 let alienWidth = tamañoJuego * 2;
 let alienHeight = tamañoJuego;
@@ -52,19 +51,29 @@ let naveAlien = {
   width: alienWidth,
   height: alienHeight
 }
+
+
 //BALAS
+
 let balas = [];
 let balasVelocidad = -10;
 let balasAlien = [];
 let balasAlienVelocidad = +15
 let finDelJuego = false;
-
-
 let animationFrameId;
 let gameCurrent = false;
 let contenedorDatos = document.querySelector("#nombre-jugador-container")
 let contenedorPuntos = document.querySelector("#tabla-puntajes")
 let juegoContenedor = document.querySelector("#juego-container")
+
+
+
+
+
+
+
+                                                                        // CARGA VENTANA
+
 
 
 
@@ -111,13 +120,18 @@ window.onload = function () {
     }
   });
 }
-//CARGAR PAGINA 
 
+
+
+
+
+
+                                                                      //CARGAR PAGINA 
 function iniciarJuego() {
-  
+
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId);
-}
+  }
   juegoContenedor.classList.add("mostrarJuego")
   board = document.querySelector("#board");
   board.width = boardWidth;
@@ -133,7 +147,7 @@ function iniciarJuego() {
   aliensImg.src = "./img/alien.png"
   gameCurrent = true
 
-  if(gameCurrent) {
+  if (gameCurrent) {
     contenedorDatos.classList.add("ocultarDatos")
     contenedorPuntos.classList.add("ocultarPuntos")
     juegoContenedor.classList.remove("ocultarJuego")
@@ -149,8 +163,12 @@ function iniciarJuego() {
 
 
 
-//RENDERIZAR JUEGO
 
+
+
+
+
+                                                                        //RENDERIZAR JUEGO
 function recarga() {
   animationFrameId = requestAnimationFrame(recarga);
   if (finDelJuego) {
@@ -159,7 +177,7 @@ function recarga() {
       text: "Buen intento " + nombreJugador + "!",
       backdrop: false
     });
-   
+
     actualizarPuntuacion(nombreJugador, puntos);
     puntos = 0;
     nave = {
@@ -176,14 +194,14 @@ function recarga() {
     aliensRows = 2;
     aliensColums = 3;
     finDelJuego = false;
-    gameCurrent= false
-    if(!gameCurrent) {
+    gameCurrent = false
+    if (!gameCurrent) {
       contenedorDatos.classList.remove("ocultarDatos")
       contenedorPuntos.classList.remove("ocultarPuntos")
       juegoContenedor.classList.add("ocultarJuego")
     }
     cancelAnimationFrame(recarga);
- 
+
     return;
   }
 
@@ -209,7 +227,13 @@ function recarga() {
     }
   }
 
-  /// BALAS NAVE
+
+
+
+
+
+
+                                                                              /// BALAS NAVE
   for (let i = 0; i < balas.length; i++) {
     let bala = balas[i];
     bala.y += balasVelocidad;
@@ -222,17 +246,23 @@ function recarga() {
         alien.alive = false;
         aliensContador--;
         puntos += 100
+        balaActiva = false;
       }
     }
   }
 
-
   while (balas.length > 0 && (balas[0].usada || balas[0].y < 0)) {
     balas.shift();
+    balaActiva = false;
   }
 
 
-  // BALAS ALIEN
+
+
+
+
+
+                                                                              // BALAS ALIEN
   for (let i = 0; i < balasAlien.length; i++) {
     let balaAlien = balasAlien[i];
     balaAlien.y += balasAlienVelocidad;
@@ -245,13 +275,16 @@ function recarga() {
     }
   }
 
-
-
   while (balas.length > 0 && (balas[0].usada || balas[0].y < 0)) {
     balas.shift();
   }
 
-  // PASAR DE NIVEL
+
+
+
+
+
+                                                                         // PASAR DE NIVEL
   if (aliensContador == 0) {
     aliensColums = Math.min(aliensColums + 1, columns / 2 - 2);
     if (aliensRows < 6) {
@@ -277,8 +310,12 @@ function recarga() {
 
 }
 
-// MOVIMIENTO NAVE
 
+
+
+
+
+                                                                          // MOVIMIENTO NAVE
 function movimientosNave(e) {
   if (finDelJuego) {
     return;
@@ -293,9 +330,12 @@ function movimientosNave(e) {
 }
 
 
-// CREAR ALIENS
 
 
+
+
+
+                                                                            // CREAR ALIENS
 function crearAliens() {
   for (let x = 0; x < aliensColums; x++) {
     for (let y = 0; y < aliensRows; y++) {
@@ -314,12 +354,19 @@ function crearAliens() {
 }
 
 
-//DISPARAR
+
+
+
+
+
+                                                                            //DISPARAR
+let balaActiva = false;
 
 function disparar(e) {
-  if (finDelJuego) {
+  if (finDelJuego || balaActiva) {
     return;
   }
+
   if (e.code == "Space") {
     let bala = {
       x: nave.x + naveWidht * 15 / 32,
@@ -329,9 +376,9 @@ function disparar(e) {
       usada: false
     }
     balas.push(bala)
+    balaActiva = true
   }
 }
-
 
 let disparoEnProceso = false;
 
@@ -364,7 +411,6 @@ function disparoAlien() {
 }
 
 
-
 function colision(a, b) {
   return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 }
@@ -377,6 +423,10 @@ function colisionNave(a, b) {
 
 
 
+
+
+
+                                                        //                PUNTOS
 let puntos = 0
 let nombreJugador = '';
 
